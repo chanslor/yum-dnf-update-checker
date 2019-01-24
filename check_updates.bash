@@ -14,7 +14,7 @@ DATE=$(date +%F)
 
 #if [ "$(sudo yum updateinfo 2>&1 | /bin/egrep "Bugfix|Enhancement|Security")" > "1" ] ; then
 if [[ "$(sudo yum updateinfo 2>&1 | /bin/grep "Security" | wc -l)" -le "1" ]] ; then
-#notify-send -u critical -t 999999999 "UPDATES" "You have pending UPDATES" --icon=dialog-information
+notify-send -u critical -t 999999999 "UPDATES" "You have pending UPDATES" --icon=dialog-information
 sudo echo "===============================================================================" > /var/log/ems_yum_updates/${DATE}.log 2>&1
 sudo date >> /var/log/ems_yum_updates/${DATE}.log 2>&1
 sudo yum updateinfo info >> /var/log/ems_yum_updates/${DATE}.log 2>&1
