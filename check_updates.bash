@@ -40,6 +40,7 @@ DATE=$(date +%F)
 SYSTEM=$(uname -n)
 TODAY=$(date)
 OUTAGE_TIME="NULL"
+LOG_DIR="/var/log/check_updates"
 
 
 runlevel_is() {
@@ -61,6 +62,11 @@ fi
 
 check_updates() {
 
+#Clean logs older than 4 days
+if [ -d $LOG_DIR ] ; then
+cd $LOG_DIR && find . -type f -name \*.log -mtime +3 | xargs rm -f
+fi
+
 if [[ "$(yum updateinfo 2>&1 | /bin/grep "Security" | wc -l)" -ge "1" ]] ; then
 echo "===============================================================================" > /var/log/check_updates/${DATE}.log 2>&1
 date >> /var/log/check_updates/${DATE}.log 2>&1
@@ -81,6 +87,7 @@ See /var/log/check_updates/ for details on patches being applied."
 #See /var/log/check_updates/ for details on patches being applied." | /bin/wall
 
 }
+G_DIR
 
 runlevel_is || ( echo "Not at correct runlevel." && exit 1 )
 
