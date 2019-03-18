@@ -45,13 +45,16 @@ release_ver() {
 	RELEASE=$(lsb_release -i | awk ' { print $3 } ')
 	case $RELEASE in
 		Fedora)
-			echo "Fedora"
+			echo "Your Distro is Fedora"
+			export YUM=dnf
 			;;
 		OracleServer)
-			echo "OL7"
+			echo "Your Distro is OL7"
+			export YUM=yum
 			;;
 		RedHatenterpriseServer)
-			echo "RHEL"
+			echo "Your Distro is RHEL"
+			export YUM=yum
 			;;
 		*)
 			return 200
@@ -84,10 +87,10 @@ if [ -d $LOG_DIR ] ; then
 cd $LOG_DIR && find . -type f -name \*.log -mtime +3 | xargs rm -f
 fi
 
-if [[ "$(yum updateinfo 2>&1 | /bin/grep "Security" | wc -l)" -ge "1" ]] ; then
+if [[ "$($YUM updateinfo 2>&1 | /bin/grep "Security" | wc -l)" -ge "1" ]] ; then
 echo "===============================================================================" > /var/log/check_updates/${DATE}.log 2>&1
 date >> /var/log/check_updates/${DATE}.log 2>&1
-yum updateinfo info >> /var/log/check_updates/${DATE}.log 2>&1
+$YUM updateinfo info >> /var/log/check_updates/${DATE}.log 2>&1
 return 100
 fi
 
@@ -106,8 +109,6 @@ See /var/log/check_updates/ for details on patches being applied."
 }
 
 release_ver || (echo "Not a supported Linux distro." && exit 1)
-
-exit 0
 
 runlevel_is || ( echo "Not at correct runlevel." && exit 1 )
 
