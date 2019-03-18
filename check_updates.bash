@@ -48,11 +48,12 @@ echo "
 
  --- $TODAY ---
 This system, $SYSTEM is scheduled for reboot at $OUTAGE_TIME 
-See /var/log/ems_yum_updates/ for details on patches being applied." | /bin/wall
+See /var/log/ems_yum_updates/ for details on patches being applied."
+#See /var/log/ems_yum_updates/ for details on patches being applied." | /bin/wall
 
 }
 
-runlevel_is || echo "Not at correct runlevel."
+runlevel_is || ( echo "Not at correct runlevel." && exit 1 )
 
 check_updates || notify_users
 
