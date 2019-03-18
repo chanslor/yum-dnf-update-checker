@@ -30,8 +30,8 @@
 #Make directories.
 #Add dir stuff to rpm install
 if [ ! -d /var/log/check_updates ] ; then
-mkdir -p /var/log/check_updates
-chmod 775 /var/log/check_updates
+sudo mkdir -p /var/log/check_updates
+sudo chmod 775 /var/log/check_updates
 fi
 
 #setup vars
@@ -41,6 +41,24 @@ TODAY=$(date)
 OUTAGE_TIME="NULL"
 LOG_DIR="/var/log/check_updates"
 
+release_ver() {
+	RELEASE=$(lsb_release -i | awk ' { print $3 } ')
+	case $RELEASE in
+		Fedora)
+			echo "Fedora"
+			;;
+		OracleServer)
+			echo "OL7"
+			;;
+		RedHatenterpriseServer)
+			echo "RHEL"
+			;;
+		*)
+			return 200
+			;;
+	esac
+
+}
 
 runlevel_is() {
 
@@ -86,7 +104,10 @@ See /var/log/check_updates/ for details on patches being applied."
 #See /var/log/check_updates/ for details on patches being applied." | /bin/wall
 
 }
-G_DIR
+
+release_ver || (echo "Not a supported Linux distro." && exit 1)
+
+exit 0
 
 runlevel_is || ( echo "Not at correct runlevel." && exit 1 )
 
