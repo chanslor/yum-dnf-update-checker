@@ -16,7 +16,24 @@ SYSTEM=$(uname -n)
 TODAY=$(date)
 OUTAGE_TIME="NULL"
 
+runlevel_is() {
+RUNLEVEL=$(runlevel | cut -d" " -f2)
+
+if [[ "$RUNLEVEL" -eq "3" || "$RUNLEVEL" -eq "5" ]]; then
+echo "You are at runlevel 3 or 5"
+return 0
+else
+echo "I don't know your runlevel"
+exit 1
+fi
+
+}
+
 check_updates() {
+
+#Remove specific user stuff to config file
+#/etc/sysconfig/check-update.conf
+#USER=mdchansl
 
 if [[ "$(sudo yum updateinfo 2>&1 | /bin/grep "Security" | wc -l)" -ge "1" ]] ; then
 notify-send -u critical -t 999999999 "UPDATES" "You have pending UPDATES" --icon=dialog-information
@@ -41,11 +58,7 @@ See /var/log/ems_yum_updates/ for details on patches being applied." | /bin/wall
 	done
 }
 
-#Look at the Amazon code: update-motd.py
+runlevel_is || echo "Not at correct runlevel."
 
-#if [ "$(sudo yum updateinfo 2>&1 | /bin/egrep "Bugfix|Enhancement|Security")" > "1" ] ; then
 
-#Remove specific user stuff to config file
-#/etc/sysconfig/check-update.conf
-#USER=mdchansl
 
