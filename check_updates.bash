@@ -42,14 +42,13 @@ fi
 }
 
 notify_users() {
-echo -e "
+echo "
 
-\U0001F534 You have pending OS Security Updates.
+        You have pending OS Security Updates.
 
  --- $TODAY ---
 This system, $SYSTEM is scheduled for reboot at $OUTAGE_TIME 
-See /var/log/ems_yum_updates/ for details on patches being applied."
-#See /var/log/ems_yum_updates/ for details on patches being applied." | /bin/wall
+See /var/log/ems_yum_updates/ for details on patches being applied." | /bin/wall
 
 }
 
