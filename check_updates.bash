@@ -26,6 +26,8 @@
 ############################################################################
 
 #Check for pending security patches
+
+#Make directories.
 #Add dir stuff to rpm install
 if [ ! -d /var/log/check_updates ] ; then
 sudo mkdir -p /var/log/check_updates
@@ -33,12 +35,15 @@ sudo chmod 775 /var/log/check_updates
 sudo chown root:unixadmin /var/log/check_updates
 fi
 
+#setup vars
 DATE=$(date +%F)
 SYSTEM=$(uname -n)
 TODAY=$(date)
 OUTAGE_TIME="NULL"
 
+
 runlevel_is() {
+
 RUNLEVEL=$(runlevel | cut -d" " -f2)
 
 # Sanity check
