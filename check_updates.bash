@@ -33,13 +33,7 @@
 #This script only checks for pending *Security* patches
 #
 
-#Make directories.
-if [ ! -d /var/log/check_updates ] ; then
-sudo mkdir -p /var/log/check_updates
-sudo chmod 775 /var/log/check_updates
-fi
 
-#setup vars
 DAY_TO_PATCH="Tuesday"
 DAY_TO_REBOOT="Tuesday"
 HOUR_TO_REBOOT="NOW"
@@ -49,6 +43,18 @@ TODAY=$(date)
 OUTAGE_TIME="NULL"
 LOG_DIR="/var/log/check_updates"
 DAY=$(/bin/date +%A)
+
+
+if [ ! -d /var/log/check_updates ] ; then
+	sudo mkdir -p /var/log/check_updates
+	sudo chmod 775 /var/log/check_updates
+else
+	#Clean logs older than 4 days
+	if [ -d $LOG_DIR ] ; then
+	cd $LOG_DIR && find . -type f -name \*.log -mtime +3 | xargs rm -f
+	fi
+fi
+
 
 release_ver() {
 	RELEASE=$(lsb_release -i | awk ' { print $3 } ')
@@ -90,11 +96,6 @@ fi
 }
 
 check_updates() {
-
-#Clean logs older than 4 days
-if [ -d $LOG_DIR ] ; then
-cd $LOG_DIR && find . -type f -name \*.log -mtime +3 | xargs rm -f
-fi
 
 if [[ "$($YUM updateinfo 2>&1 | /bin/grep "Security" | wc -l)" -ge "1" ]] ; then
 echo "===============================================================================" > /var/log/check_updates/${DATE}.log 2>&1
