@@ -97,6 +97,12 @@ fi
 
 }
 
+no_updates() {
+	echo
+	echo "No Security updates."
+	echo
+}
+
 notify_users() {
 echo "
 
@@ -113,6 +119,6 @@ release_ver || (echo "Not a supported Linux distro." && exit 1)
 
 runlevel_is || ( echo "Not at correct runlevel." && exit 1 )
 
-check_updates || notify_users
+(check_updates && no_updates ) || notify_users
 
 
