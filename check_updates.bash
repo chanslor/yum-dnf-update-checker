@@ -36,6 +36,7 @@
 
 #To Do: Place these vars into /etc/sysconfig/check_updates.conf for user modification.
 #User vars
+#DAY_TO_PATCH="Monday"
 DAY_TO_PATCH="Tuesday"
 DAY_TO_REBOOT="Tuesday"
 HOUR_TO_REBOOT="NOW"
@@ -102,8 +103,8 @@ check_updates() {
 
 if [[ "$($YUM updateinfo 2>&1 | /bin/grep "Security" | wc -l)" -ge "1" ]] ; then
 echo "===============================================================================" > /var/log/check_updates/${DATE}.log 2>&1
-date >> /var/log/check_updates/${DATE}.log 2>&1
-$YUM updateinfo info >> /var/log/check_updates/${DATE}.log 2>&1
+date >> ${LOG_DIR}/${DATE}.log 2>&1
+$YUM updateinfo info >> ${LOG_DIR}/${DATE}.log 2>&1
 
 return 100
 fi
@@ -133,13 +134,27 @@ day_to_patch() {
 	echo "We download and install patches today."
 	else
 	echo "Not patching today."
-	exit 0
+	return 2
 	fi
 }
 
+patch_it() {
+	#$YUM clean all
+	#$YUM update-minimal --security >> ${LOG_DIR}/${DATE}-yum-update-evidence.log 2>&1
+	echo "YUM update-minimal --security"
+	exitCode=$?
+	if [ $exitCode -ne "0" ] ; then
+	echo "yum update failed."
+	echo "See erros in ${LOG_DIR}/${DATE}-yum-update-evidence.log"
+	exit 1
+	fi
+	
+}
+
+
 #MAIN
 
-day_to_patch
+(day_to_patch && patch_it) || echo "$DAY is not your day to patch"
 
 exit 0
 
