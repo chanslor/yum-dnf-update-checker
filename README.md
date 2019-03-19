@@ -1,1 +1,1 @@
-# ems-checkupdates
+# checkupdates
