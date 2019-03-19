@@ -41,7 +41,6 @@ sudo chmod 775 /var/log/check_updates
 fi
 
 #setup vars
-DAY_TO_RUN="Tuesday"
 DAY_TO_PATCH="Tuesday"
 DAY_TO_REBOOT="Tuesday"
 HOUR_TO_REBOOT="NOW"
@@ -126,15 +125,6 @@ See /var/log/check_updates/ for details on patches being applied."
 
 }
 
-day_to_run() {
-	if [[ ${DAY} == ${DAY_TO_RUN} ]]; then
-	echo "This script executes today."
-	else
-	echo "No execution of this script today."
-	exit 0
-	fi
-}
-
 day_to_patch() {
 	if [[ ${DAY} == ${DAY_TO_PATCH} ]]; then
 	echo "We download and install patches today."
@@ -146,7 +136,7 @@ day_to_patch() {
 
 #MAIN
 
-day_to_run && day_to_patch
+day_to_patch
 
 exit 0
 
