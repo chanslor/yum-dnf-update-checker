@@ -101,6 +101,8 @@ fi
 
 check_updates() {
 
+$YUM clean all > /dev/null 2>&1
+
 if [[ "$($YUM updateinfo 2>&1 | /bin/grep "Security" | wc -l)" -ge "1" ]] ; then
 echo "===============================================================================" > /var/log/check_updates/${DATE}.log 2>&1
 date >> ${LOG_DIR}/${DATE}.log 2>&1
@@ -139,9 +141,9 @@ day_to_patch() {
 }
 
 patch_it() {
-	#$YUM clean all
 	#$YUM update-minimal --security >> ${LOG_DIR}/${DATE}-yum-update-evidence.log 2>&1
 	echo "YUM update-minimal --security"
+	touch /root/check_updates
 	exitCode=$?
 	if [ $exitCode -ne "0" ] ; then
 	echo "yum update failed."
@@ -154,17 +156,15 @@ patch_it() {
 
 #MAIN
 
-(day_to_patch && patch_it) || echo "$DAY is not your day to patch"
-
-exit 0
-
-day_to_reboot
-hour_to_reboot
+#day_to_reboot
+#/root/check_updates
+#hour_to_reboot
 
 release_ver || (echo "Not a supported Linux distro." && exit 1)
 
 runlevel_is || ( echo "Not at correct runlevel." && exit 1 )
 
-(check_updates && no_updates ) || notify_users
+(check_updates | pv -t && no_updates ) || notify_users
 
+(day_to_patch && patch_it) || echo "$DAY is not your day to patch"
 
