@@ -25,9 +25,14 @@
 #
 ############################################################################
 
-#This script checks for pending *Security* patches
-#TODO: Add var for bugs,enhancements,etc.
-#It is recommended to place this file in /etc/cron.weekly/
+# This script is placed in /etc/cron.daily/
+#
+# Executes on $DAY_TO_RUN
+# Schedules system for patch on $DAY_PATCH 
+# and reboots on $DAY_TO_REBOOT and $HOUR_TO_REBOOT
+#
+#This script only checks for pending *Security* patches
+#
 
 #Make directories.
 if [ ! -d /var/log/check_updates ] ; then
@@ -36,11 +41,16 @@ sudo chmod 775 /var/log/check_updates
 fi
 
 #setup vars
+DAY_TO_RUN="Tuesday"
+DAY_TO_PATCH="Tuesday"
+DAY_TO_REBOOT="Tuesday"
+HOUR_TO_REBOOT="NOW"
 DATE=$(date +%F)
 SYSTEM=$(uname -n)
 TODAY=$(date)
 OUTAGE_TIME="NULL"
 LOG_DIR="/var/log/check_updates"
+DAY=$(/bin/date +%A)
 
 release_ver() {
 	RELEASE=$(lsb_release -i | awk ' { print $3 } ')
@@ -92,6 +102,7 @@ if [[ "$($YUM updateinfo 2>&1 | /bin/grep "Security" | wc -l)" -ge "1" ]] ; then
 echo "===============================================================================" > /var/log/check_updates/${DATE}.log 2>&1
 date >> /var/log/check_updates/${DATE}.log 2>&1
 $YUM updateinfo info >> /var/log/check_updates/${DATE}.log 2>&1
+
 return 100
 fi
 
@@ -114,6 +125,33 @@ See /var/log/check_updates/ for details on patches being applied."
 #See /var/log/check_updates/ for details on patches being applied." | /bin/wall
 
 }
+
+day_to_run() {
+	if [[ ${DAY} == ${DAY_TO_RUN} ]]; then
+	echo "This script executes today."
+	else
+	echo "No execution of this script today."
+	exit 0
+	fi
+}
+
+day_to_patch() {
+	if [[ ${DAY} == ${DAY_TO_PATCH} ]]; then
+	echo "We download and install patches today."
+	else
+	echo "Not patching today."
+	exit 0
+	fi
+}
+
+#MAIN
+
+day_to_run && day_to_patch
+
+exit 0
+
+day_to_reboot
+hour_to_reboot
 
 release_ver || (echo "Not a supported Linux distro." && exit 1)
 
