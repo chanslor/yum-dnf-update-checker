@@ -27,8 +27,7 @@
 
 # This script is placed in /etc/cron.hourly/
 #
-# Executes on $DAY_TO_RUN
-# Schedules system for patch on $DAY_PATCH 
+# Schedules system for patching on $DAY_TO_PATCH 
 # and reboots on $DAY_TO_REBOOT and $HOUR_TO_REBOOT
 #
 #This script only checks for pending *Security* patches
