@@ -32,6 +32,9 @@
 #
 #This script only checks for pending *Security* patches
 #
+# Requirements:
+# pv
+#
 
 
 #To Do: Place these vars into /etc/sysconfig/check_updates.conf for user modification.
