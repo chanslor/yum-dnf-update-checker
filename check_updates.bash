@@ -82,10 +82,9 @@ runlevel_is() {
 
 RUNLEVEL=$(runlevel | cut -d" " -f2)
 
-# Sanity check
 # What Would SystemD do?
 if [[ "$RUNLEVEL" -eq "3" || "$RUNLEVEL" -eq "5" ]]; then
-echo "You are at runlevel 3 or 5"
+echo "Sanity check: You are at runlevel 3 or 5"
 echo "Check for Security updates..."
 return 0
 else
