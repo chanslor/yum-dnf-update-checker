@@ -25,7 +25,7 @@
 #
 ############################################################################
 
-# This script is placed in /etc/cron.daily/
+# This script is placed in /etc/cron.hourly/
 #
 # Executes on $DAY_TO_RUN
 # Schedules system for patch on $DAY_PATCH 
