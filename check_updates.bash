@@ -144,6 +144,7 @@ day_to_patch() {
 }
 
 patch_it() {
+
 	#$YUM update-minimal --security >> ${LOG_DIR}/${DATE}-yum-update-evidence.log 2>&1
 	echo "YUM update-minimal --security"
 	touch /root/check_updates
@@ -156,18 +157,29 @@ patch_it() {
 	
 }
 
+did_we_just_run() {
+
+	if [ -f /root/check_updates ]; then
+	#Did we just run?
+	return 1
+	fi
+}
+
 
 #MAIN
 
 #day_to_reboot
 #/root/check_updates
-#hour_to_reboot
+#hour_to_reboot  #rm -f /root/check_updates
 
 release_ver || (echo "Not a supported Linux distro." && exit 1)
 
 runlevel_is || ( echo "Not at correct runlevel." && exit 1 )
 
+did_we_just_run || echo "EXIT. /root/check_updates indicates we just ran." && exit 0
+
 (check_updates | pv -t && no_updates ) || notify_users
 
-(day_to_patch && patch_it) || echo "$DAY is not your day to patch"
+(day_to_patch || echo "$DAY is not your day to patch") && patch_it
+
 
