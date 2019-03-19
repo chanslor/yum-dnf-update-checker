@@ -34,14 +34,18 @@
 #
 
 
+#To Do: Place these vars into /etc/sysconfig/check_updates.conf for user modification.
+#User vars
 DAY_TO_PATCH="Tuesday"
 DAY_TO_REBOOT="Tuesday"
 HOUR_TO_REBOOT="NOW"
+LOG_DIR="/var/log/check_updates"
+
+#System vars
 DATE=$(date +%F)
 SYSTEM=$(uname -n)
 TODAY=$(date)
 OUTAGE_TIME="NULL"
-LOG_DIR="/var/log/check_updates"
 DAY=$(/bin/date +%A)
 
 
