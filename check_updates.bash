@@ -25,10 +25,11 @@
 #
 ############################################################################
 
-#Check for pending security patches
+#This script checks for pending *Security* patches
+#TODO: Add var for bugs,enhancements,etc.
+#It is recommended to place this file in /etc/cron.weekly/
 
 #Make directories.
-#Add dir stuff to rpm install
 if [ ! -d /var/log/check_updates ] ; then
 sudo mkdir -p /var/log/check_updates
 sudo chmod 775 /var/log/check_updates
@@ -49,7 +50,7 @@ release_ver() {
 			export YUM=dnf
 			;;
 		OracleServer)
-			echo "Your Distro is OL7"
+			echo "Your Distro is Oracle Linux"
 			export YUM=yum
 			;;
 		RedHatenterpriseServer)
